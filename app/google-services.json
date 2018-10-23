@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "935561798848",
+    "firebase_url": "https://priavtechat2.firebaseio.com",
+    "project_id": "priavtechat2",
+    "storage_bucket": "priavtechat2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935561798848:android:9aca90e30332502d",
+        "android_client_info": {
+          "package_name": "com.cmk.privatechat2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935561798848-9gkat8qep5t99dcfopvf35kblsocbo2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHXZZjmdy-WZxT1_8Hrx7lxMDL8mgg2Kw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
