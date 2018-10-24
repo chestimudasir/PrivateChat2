@@ -2,36 +2,32 @@ package com.cmk.privatechat2;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyViewHolder> {
-    private String userEmail;
-
-    public UserListAdapter(User user) {
-       userEmail = user.getEmail();
-    }
-
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
+    String mMessage;
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.user_list, parent, false);
+                .inflate(R.layout.activity_messaging, parent, false);
         MyViewHolder viewHolder = new MyViewHolder(v);
         return viewHolder;
     }
 
+    public MessageAdapter(Message newMessage) {
+        this.mMessage = newMessage.getMessage();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.userNameTv.setText(userEmail);
+        holder.messageTv.setText(mMessage);
     }
 
     @Override
@@ -40,10 +36,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView userNameTv;
+        public TextView messageTv;
         public MyViewHolder(View view) {
             super(view);
-            userNameTv = view.findViewById(R.id.user_list_tv);
+            messageTv = view.findViewById(R.id.message_tv);
         }
     }
 }

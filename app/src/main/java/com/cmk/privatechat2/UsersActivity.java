@@ -22,7 +22,7 @@ public class UsersActivity extends AppCompatActivity{
     private RecyclerView mRecycleView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private String[ ] userList = {"Zeeshan", "Tabich"};
+   // private String[ ] userList = {"Zeeshan", "Tabich"};
     private FirebaseDatabase mDb;
     private DatabaseReference mRef;
 
@@ -50,7 +50,6 @@ public class UsersActivity extends AppCompatActivity{
                User mUser = dataSnapshot.getValue(User.class);
                mAdapter = new UserListAdapter(mUser);
                mRecycleView.setAdapter(mAdapter);
-               mAdapter.notifyDataSetChanged();
             }
 
             @Override

@@ -45,6 +45,7 @@
         android:text="SignUp"
         android:textColor="#fff"
         android:background="@color/colorPrimary"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="@+id/editText2_password"
         app:layout_constraintTop_toBottomOf="@+id/editText2_password" />
 
