@@ -10,14 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyViewHolder> {
-    private String userEmail;
+    private ArrayList<User> mUserList;
 
-    public UserListAdapter(User user) {
-       userEmail = user.getEmail();
+    public UserListAdapter(ArrayList<User> mUserList) {
+        this.mUserList = mUserList;
     }
 
     @NonNull
@@ -31,12 +32,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.userNameTv.setText(userEmail);
+        User currentUserItem  = mUserList.get(position);
+        holder.userNameTv.setText(currentUserItem.getEmail());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mUserList.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

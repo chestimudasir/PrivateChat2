@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UsersActivity extends AppCompatActivity{
@@ -22,7 +23,7 @@ public class UsersActivity extends AppCompatActivity{
     private RecyclerView mRecycleView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-   // private String[ ] userList = {"Zeeshan", "Tabich"};
+    private ArrayList<User> userArrayList;
     private FirebaseDatabase mDb;
     private DatabaseReference mRef;
 
@@ -31,6 +32,7 @@ public class UsersActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
         mRecycleView = findViewById(R.id.recyclerView2);
+        userArrayList = new ArrayList<>();
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecycleView.setLayoutManager(mLayoutManager);
@@ -48,7 +50,9 @@ public class UsersActivity extends AppCompatActivity{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                User mUser = dataSnapshot.getValue(User.class);
-               mAdapter = new UserListAdapter(mUser);
+               userArrayList.add(mUser);
+               mAdapter = new UserListAdapter(userArrayList);
+               mAdapter.notifyDataSetChanged();
                mRecycleView.setAdapter(mAdapter);
             }
 

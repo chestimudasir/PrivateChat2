@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class MessagingActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -30,6 +32,7 @@ public class MessagingActivity extends AppCompatActivity {
     private EditText messageEditText;
     private String messageString;
     private String currentUserEmail;
+    private ArrayList<Message> messageArrayList;
 
     //While Launching this Activity make sure to Bundle the receiver User's email and uid
     //private String receiverUserEmail;
@@ -40,6 +43,7 @@ public class MessagingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
+        messageArrayList = new ArrayList<>();
 
         mDb = FirebaseDatabase.getInstance();
         mRef = mDb.getReference("MessageRooms");
@@ -63,35 +67,37 @@ public class MessagingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 messageString = messageEditText.getText().toString();
+                Message message = new Message(mAuth.getCurrentUser().getEmail(),messageString);
                 //this should be  .child(currentUserEmail + receiverUserEmail)
-                mRef.child(currentUserEmail).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Message newMessage = dataSnapshot.getValue(Message.class);
-                        mAdapter = new MessageAdapter(newMessage);
+                mRef.push().setValue(message);
+            }
+        });
 
-                    }
+        mRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Message newMessage = dataSnapshot.getValue(Message.class);
+                messageArrayList.add(newMessage);
+            }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+            }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d("Message","Message not sent");
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
