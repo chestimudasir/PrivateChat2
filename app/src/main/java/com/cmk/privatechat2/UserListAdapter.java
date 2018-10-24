@@ -16,9 +16,15 @@ import java.util.zip.Inflater;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyViewHolder> {
     private ArrayList<User> mUserList;
-
+    private OnItemClickListener mListener;
+    public interface OnItemClickListener{
+        void OnItemClick(int position);
+    }
     public UserListAdapter(ArrayList<User> mUserList) {
         this.mUserList = mUserList;
+    }
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
     }
 
     @NonNull
@@ -26,7 +32,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_list, parent, false);
-        MyViewHolder viewHolder = new MyViewHolder(v);
+        MyViewHolder viewHolder = new MyViewHolder(v, mListener);
         return viewHolder;
     }
 
@@ -43,9 +49,21 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.MyView
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView userNameTv;
-        public MyViewHolder(View view) {
+        public MyViewHolder(View view, final OnItemClickListener listener) {
             super(view);
             userNameTv = view.findViewById(R.id.user_list_tv);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.OnItemClick(position);
+                        }
+                    }
+
+                }
+            });
         }
     }
 }

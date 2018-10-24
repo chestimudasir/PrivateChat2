@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
-    String mMessage;
+    private ArrayList<Message> messageArrayList;
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -21,18 +22,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         return viewHolder;
     }
 
-    public MessageAdapter(Message newMessage) {
-        this.mMessage = newMessage.getMessage();
+    public MessageAdapter(ArrayList<Message> messageArrayList) {
+        this.messageArrayList = messageArrayList;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.messageTv.setText(mMessage);
+        Message currentMessage = messageArrayList.get(position);
+        holder.messageTv.setText(currentMessage.getMessage());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return messageArrayList.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

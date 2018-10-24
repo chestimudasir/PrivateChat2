@@ -1,5 +1,6 @@
 package com.cmk.privatechat2;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,8 +32,9 @@ public class MessagingActivity extends AppCompatActivity {
     private Button sendButton;
     private EditText messageEditText;
     private String messageString;
-    private String currentUserEmail;
+    private String currentUserUid;
     private ArrayList<Message> messageArrayList;
+    private String uniqueNodeName;
 
     //While Launching this Activity make sure to Bundle the receiver User's email and uid
     //private String receiverUserEmail;
@@ -43,18 +45,21 @@ public class MessagingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
+        Intent intent = getIntent();
+        String receiverUid = intent.getStringExtra("RECEIVER_UID");
         messageArrayList = new ArrayList<>();
 
         mDb = FirebaseDatabase.getInstance();
-        mRef = mDb.getReference("MessageRooms");
+
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
-            currentUserEmail = mAuth.getCurrentUser().getEmail();
+            currentUserUid = mAuth.getCurrentUser().getUid();
         }else{
             Toast.makeText(this, "No User", Toast.LENGTH_LONG)
                     .show();
         }
-
+        uniqueNodeName = receiverUid + currentUserUid;
+        mRef = mDb.getReference("Messages").child(uniqueNodeName);
         mRecyclerView = findViewById(R.id.recyclerView_messages);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -68,8 +73,8 @@ public class MessagingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 messageString = messageEditText.getText().toString();
                 Message message = new Message(mAuth.getCurrentUser().getEmail(),messageString);
-                //this should be  .child(currentUserEmail + receiverUserEmail)
                 mRef.push().setValue(message);
+                messageEditText.setText("");
             }
         });
 
@@ -78,6 +83,9 @@ public class MessagingActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Message newMessage = dataSnapshot.getValue(Message.class);
                 messageArrayList.add(newMessage);
+                mAdapter = new MessageAdapter(messageArrayList);
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(mAdapter);
             }
 
             @Override
@@ -97,7 +105,7 @@ public class MessagingActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("MESSAGE","Errororor");
             }
         });
     }
