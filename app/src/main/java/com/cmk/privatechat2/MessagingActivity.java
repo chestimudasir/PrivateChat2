@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,14 +29,16 @@ public class MessagingActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FirebaseDatabase mDb;
-    private DatabaseReference mRef;
+    private DatabaseReference mRefSender;
+    private DatabaseReference mRefReceiver;
     private FirebaseAuth mAuth;
     private Button sendButton;
     private EditText messageEditText;
     private String messageString;
     private String currentUserUid;
     private ArrayList<Message> messageArrayList;
-    private String uniqueNodeName;
+    private String senderUniqueNodeName;
+    private String receiverUniqueNodeName;
 
     //While Launching this Activity make sure to Bundle the receiver User's email and uid
     //private String receiverUserEmail;
@@ -58,8 +62,10 @@ public class MessagingActivity extends AppCompatActivity {
             Toast.makeText(this, "No User", Toast.LENGTH_LONG)
                     .show();
         }
-        uniqueNodeName = receiverUid + currentUserUid;
-        mRef = mDb.getReference("Messages").child(uniqueNodeName);
+        senderUniqueNodeName = receiverUid + currentUserUid;
+        receiverUniqueNodeName = currentUserUid + receiverUid;
+        mRefSender = mDb.getReference("Messages").child(senderUniqueNodeName);
+        mRefReceiver = mDb.getReference("Messages").child(receiverUniqueNodeName);
         mRecyclerView = findViewById(R.id.recyclerView_messages);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -72,13 +78,18 @@ public class MessagingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 messageString = messageEditText.getText().toString();
-                Message message = new Message(mAuth.getCurrentUser().getEmail(),messageString);
-                mRef.push().setValue(message);
+                final Message message = new Message(mAuth.getCurrentUser().getEmail(),messageString);
+                mRefSender.push().setValue(message).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mRefReceiver.push().setValue(message);
+                    }
+                });
                 messageEditText.setText("");
             }
         });
 
-        mRef.addChildEventListener(new ChildEventListener() {
+        mRefSender.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Message newMessage = dataSnapshot.getValue(Message.class);
